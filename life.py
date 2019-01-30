@@ -9,9 +9,7 @@ Numpy array representations.
 """
 
 
-from pprint import pprint
 import curses
-import random
 import time
 
 
