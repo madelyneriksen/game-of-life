@@ -28,8 +28,8 @@ class Life(dict):
         expensive to iterate over."""
         return 0
 
-    def transition_cell(self, x: int, y: int):
-        """Transition step for a cell. Determine if it lives or dies.
+    def check_cell(self, x: int, y: int):
+        """check step for a cell. Determine if it lives or dies.
 
         Returns:
             live, dead: Two Lists of cells that live or die respectively.
@@ -77,7 +77,7 @@ class Life(dict):
         live, dead = [], []
         # Create all the transitions for the turn
         for x, y in self.queue_cells():
-            step_live, step_dead = self.transition_cell(x, y)
+            step_live, step_dead = self.check_cell(x, y)
             live += step_live
             dead += step_dead
         # Apply all transitions. Remember that in Life, the state of the board
