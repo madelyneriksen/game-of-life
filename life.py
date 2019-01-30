@@ -10,7 +10,7 @@ Numpy array representations.
 
 
 from pprint import pprint
-from curses import curs_set, wrapper, error
+import curses
 import random
 import time
 
@@ -54,7 +54,7 @@ class Life(dict):
         elif total < 3 or total > 4 and cell:
             dead.append((x, y))
         elif cell:
-            live.append((x, y))
+            pass
         return live, dead
 
     def queue_cells(self):
@@ -92,24 +92,24 @@ class Life(dict):
 
 
 def loop(screen):
-    """The instance of our game.
+    """The main game loop.
 
     Curses is used to create a UI and visualization for the board. Because
     we can't fit an infinite board in a terminal, the player instead can
     move around with vim-keybinds (we're not savages).
     """
-    # We initialize our board with an r-pentomino
+    # Initialize the board with an r-pentomino
     game = Life(
         {
-            (25, 25): 1,
-            (26, 25): 1,
-            (25, 26): 1,
-            (24, 26): 1,
-            (25, 27): 1,
+            (25, 15): 1,
+            (26, 15): 1,
+            (25, 16): 1,
+            (24, 16): 1,
+            (25, 17): 1,
         }
     )
     adjust_x, adjust_y = 0, 0
-    # We need to set inputs to be non-blocking.
+    # Inputs set to be non-blocking.
     screen.nodelay(True)
     while True:
         move = screen.getch()
@@ -129,23 +129,24 @@ def loop(screen):
         game.play_game()
         max_y, max_x = screen.getmaxyx()
         for x, y in game.keys():
-            if ((0 + adjust_x) < x < (max_x + adjust_x) and
-                    (0 + adjust_y) < y < (max_y + adjust_y)):
+            visible_x = (0 + adjust_x) < x < (max_x + adjust_x)
+            visible_y = (0 + adjust_y) < y < (max_y + adjust_y)
+            if visible_x and visible_y:
                 try:
                     screen.addstr(
                         y - adjust_y,
                         x - adjust_x,
                         "X"
                     )
-                except error:
+                except curses.error:
                     pass
-        curs_set(0)
+        curses.curs_set(0)
         screen.refresh()
         time.sleep(.1)
 
 
 if __name__ == "__main__":
     try:
-        wrapper(loop)
+        curses.wrapper(loop)
     except KeyboardInterrupt:
         exit(0)
